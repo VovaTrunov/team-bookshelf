@@ -12,6 +12,6 @@ export async function addBookAction(formData: FormData) {
     return;
   }
 
-  addBook(title.trim(), author.trim(), recommended_by.trim());
+  await addBook(title.trim(), author.trim(), recommended_by.trim());
   redirect("/");
 }

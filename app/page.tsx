@@ -3,8 +3,8 @@ import Link from "next/link";
 
 export const dynamic = "force-dynamic";
 
-export default function HomePage() {
-  const books = getBooks();
+export default async function HomePage() {
+  const books = await getBooks();
 
   return (
     <div>

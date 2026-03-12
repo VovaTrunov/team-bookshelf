@@ -1,3 +1,5 @@
+import { supabase } from "./supabase";
+
 export interface Book {
   id: number;
   title: string;
@@ -5,41 +7,27 @@ export interface Book {
   recommended_by: string;
 }
 
-let books: Book[] = [
-  {
-    id: 1,
-    title: "The Pragmatic Programmer",
-    author: "David Thomas & Andrew Hunt",
-    recommended_by: "Alex",
-  },
-  {
-    id: 2,
-    title: "Designing Data-Intensive Applications",
-    author: "Martin Kleppmann",
-    recommended_by: "Sam",
-  },
-  {
-    id: 3,
-    title: "Clean Code",
-    author: "Robert C. Martin",
-    recommended_by: "Jordan",
-  },
-  {
-    id: 4,
-    title: "Staff Engineer",
-    author: "Will Larson",
-    recommended_by: "Taylor",
-  },
-];
+export async function getBooks(): Promise<Book[]> {
+  const { data, error } = await supabase
+    .from("books")
+    .select("id, title, author, recommended_by")
+    .order("created_at", { ascending: true });
 
-let nextId = 5;
-
-export function getBooks(): Book[] {
-  return books;
+  if (error) throw error;
+  return data ?? [];
 }
 
-export function addBook(title: string, author: string, recommended_by: string): Book {
-  const book: Book = { id: nextId++, title, author, recommended_by };
-  books = [...books, book];
-  return book;
+export async function addBook(
+  title: string,
+  author: string,
+  recommended_by: string
+): Promise<Book> {
+  const { data, error } = await supabase
+    .from("books")
+    .insert({ title, author, recommended_by })
+    .select()
+    .single();
+
+  if (error) throw error;
+  return data;
 }
